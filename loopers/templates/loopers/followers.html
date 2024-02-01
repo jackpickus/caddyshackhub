@@ -1,0 +1,16 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block content %}
+    <h3>Followers: {{ total }}</h3>
+    {% if followers %}
+    <ul>
+        {% for follower in followers %}
+            <li class="list-item">
+                {{ follower }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>You have 0 followers</p>
+    {% endif %}
+{% endblock %}

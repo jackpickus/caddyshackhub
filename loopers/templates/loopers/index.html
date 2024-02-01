@@ -1,0 +1,28 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block content %}
+    <h3>Loop Count: {{ loop_count }}</h3>
+    {% if all_loops %}
+        <h5>Recent Loops</h5>
+        <ul>
+        {% for loop in all_loops %}
+            <li class="list-item">
+                {{ loop.loop_title }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No loops go home</p>
+    {% endif %}
+    <p>Total Money Made: ${{ total_money }}</p>
+    {% if top_three_friends %}
+        <h5>Top 3 Friends</h5>
+        <ul>
+        {% for fri_loop_count, fri_name in top_three_friends.items %}
+            <li class="list-item">
+                {{ fri_name }} - {{ fri_loop_count }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

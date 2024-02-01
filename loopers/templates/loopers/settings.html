@@ -1,0 +1,17 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block content %}
+    <h3>Settings</h3>
+    <p>User: {{ user.get_username }}</p>
+    <div>
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p><a href="{% url 'loopers:change_email'%}">Change email</a></p>
+        <p><a href="{% url 'loopers:change_password'%}">Change password</a></p>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block content %}
+    <h3>Loops</h3>
+    {% if loop_list %}
+    <ul>
+        {% for loop in loop_list %}
+            <li class="list-item">
+                <a href="{{ loop.get_absolute_url }}">{{ loop.loop_title }}</a> - ({{loop.num_loops}})
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>You have no loops</p>
+    {% endif %}
+{% endblock %}

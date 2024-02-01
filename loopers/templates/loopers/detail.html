@@ -1,0 +1,17 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block content %}
+    <h3>{{ loop.loop_title }}</h3>
+
+    <p><strong>Date:</strong> {{ loop.date }}</p>
+    <p><strong>Number of loops:</strong> {{ loop.num_loops }}</p>
+    <p><strong>Money:</strong> ${{ loop.money }}</p>
+    <p><strong>Notes:</strong> {{ loop.notes }}</p>
+    <p><a href="{% url 'loopers:edit_loop' loop.id %}">Edit Loop</a></p>
+    <a
+        class="btn btn-danger"
+        href="delete/{{ loop.id }}">
+        Delete loop
+    </a>
+
+{% endblock %}

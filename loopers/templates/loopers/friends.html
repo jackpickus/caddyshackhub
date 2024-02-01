@@ -1,0 +1,53 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block title %}Friends - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="main-content">
+        <div id="friends">
+            <h3>Friends</h3>
+
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="my-button">
+                    <button type="submit">Follow</button>
+                </div>
+            </form>
+
+            <div id="followers-btn">
+                <a href="{% url 'loopers:followers' %}">Followers</a>
+            </div>
+        </div>
+
+        <div id="following">
+            <h3>Following: {{ total_following }}</h3>
+            {% if all_friends %}
+            <ul>
+                {% for friend in all_friends %}
+                    <div class="main-content">
+                        <li class="list-item">
+                            {{ friend }} - {{ friend.loop_count }} 
+                        </li>
+                        <a
+                            class="btn btn-danger"
+                            href="delete/{{ friend.id }}">
+                            Unfollow
+                        </a>
+                    </div>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p>You aren't following anyone</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

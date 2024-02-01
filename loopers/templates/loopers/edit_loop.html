@@ -1,0 +1,25 @@
+{% extends "loopers/base_generic.html" %}
+
+{% block title %}Edit Loop - {{ block.super }}{% endblock %}
+
+{% block content%}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>Edit Loop</h3>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+        {{ form.as_table }}
+        </table>
+        <div class="my-button">
+            <input type="submit" value="Submit">
+        </div>
+    </form>
+{% endblock %}
