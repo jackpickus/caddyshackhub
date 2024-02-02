@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Add additional CSS in static file -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" media="screen and (min-width: 900px)" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" media="screen and (max-width: 600px)" href="{% static 'css/smallstyles.css' %}">
 </head>
 <body>
     <div>
