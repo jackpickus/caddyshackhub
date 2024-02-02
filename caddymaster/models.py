@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class CaddyMaster(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     email_validated = models.BooleanField(default=False)
     change_email = models.EmailField(max_length=254, null=True, blank=True)
 
