@@ -7,21 +7,36 @@ a {
 }
 
 .sidebar-nav {
-    padding-left: 10%;
+    display: flex;
+    justify-content: space-around;
 }
 
-.sidebar-nav-settings {
-    text-align: right;
+.sidebar-nav-links {
+    width: 10rem;
+    height: 8rem;
 }
 
 .menu-link {
-    max-width: 30%;
+    margin: 1.75rem;
     border: #111;
     border-style: solid;
 }
 
-.menu-link-logged-in {
+h3 {
+    padding-top: 1.25rem;
+}
 
+ul {
+    padding: 0;
+}
+
+ul .main-content {
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    list-style-type: none;
 }
 
 .main-content {
@@ -31,4 +46,9 @@ a {
 table {
     margin-left: auto;
     margin-right: auto;
+}
+
+.my-button {
+    padding-top: 1.33rem;
+    text-align: center;
 }

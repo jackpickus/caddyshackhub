@@ -42,19 +42,6 @@ table {
   border-spacing: 0.75rem;
 }
 
-th {
-    text-align: left;
-}
-
-.list-item {
-    padding: 0rem 0.75rem 0.75rem 0rem;
-}
-
 #following {
     padding-left: 1rem;
-}
-
-#followers-btn {
-    padding-top: 1.25rem;
-    font-size: 1.33rem;
 }

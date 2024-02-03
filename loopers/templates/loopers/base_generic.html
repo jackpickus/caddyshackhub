@@ -17,13 +17,17 @@
             <div class="sidebar">
             {% block sidebar %}
                 <div class="sidebar-nav">
-                    <p class="menu-link"><a href="{% url 'loopers:index' %}">Home</a></p>
-                    <p class="menu-link"><a href="{% url 'loopers:loops'%}">Loops</a></p>
-                 {% if user.is_authenticated %}
-                    <p class="menu-link"><a href="{% url 'loopers:new_loop'%}">New Loop</a></p>
-                    <p class="menu-link"><a href="{% url 'loopers:friends'%}">Friends</a></p>
-                    <div class="sidebar-nav-settings">
-                        <p class="menu-link">User: {{ user.get_username }}</p>   
+                    <div class="sidebar-nav-links">
+                        <p class="menu-link"><a href="{% url 'loopers:index' %}">Home</a></p>
+                        <p class="menu-link"><a href="{% url 'loopers:loops'%}">Loops</a></p>
+                    </div>
+                {% if user.is_authenticated %}
+                    <div class="sidebar-nav-links">
+                        <p class="menu-link"><a href="{% url 'loopers:new_loop'%}">New Loop</a></p>
+                        <p class="menu-link"><a href="{% url 'loopers:friends'%}">Friends</a></p>
+                    </div>
+                    <div class="sidebar-nav-links">
+                        <p class="menu-link">{{ user.get_username }}</p>   
                         <p class="menu-link"><a href="{% url 'loopers:settings'%}">Settings</a></p>
                         <form id="logout-form" method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
@@ -31,9 +35,10 @@
                         </form>
                     </div>
                  {% else %}
-                    <p class="menu-link"><a href="{% url 'login'%}?next={% url 'loopers:index'%}">Login</a> / 
-                        <a href="{% url 'loopers:register' %}">Sign up</a>
-                    </p>
+                    <div class="sidebar-nav-links">
+                        <p class="menu-link"><a href="{% url 'login'%}?next={% url 'loopers:index'%}">Login</a></p>
+                        <p class="menu-link"><a href="{% url 'loopers:register' %}">Sign up</a></p>
+                    </div>
                  {% endif %}
                 </div>
             {% endblock %}
