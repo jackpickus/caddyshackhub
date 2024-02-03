@@ -1,0 +1,60 @@
+.the-center-block {
+    padding-left: 5rem;
+}
+
+.main-content {
+    display: flex;
+    position: relative;
+}
+
+.pagination {
+    top: 25rem;
+    position: absolute;
+    bottom: 0rem;
+    left: 7rem;
+}
+
+.sidebar {
+    margin-top: 0.75rem;
+}
+
+.sidebar-nav {
+    padding: 0px;
+    padding-right: 2rem;
+    list-style: none;
+}
+
+a {
+    color: #076652;
+}
+
+a:hover {
+    color: #00cc95
+}
+
+.my-button {
+    padding-top: 0.5rem;
+    text-align: center;
+}
+
+table {
+  border-collapse: separate; 
+  border-spacing: 0.75rem;
+}
+
+th {
+    text-align: left;
+}
+
+.list-item {
+    padding: 0rem 0.75rem 0.75rem 0rem;
+}
+
+#following {
+    padding-left: 1rem;
+}
+
+#followers-btn {
+    padding-top: 1.25rem;
+    font-size: 1.33rem;
+}

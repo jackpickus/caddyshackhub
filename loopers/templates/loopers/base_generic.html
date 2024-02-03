@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Add additional CSS in static file -->
     {% load static %}
-    <link rel="stylesheet" media="screen and (min-width: 900px)" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" media="screen and (min-width: 900px)" href="{% static 'css/bigstyles.css' %}">
     <link rel="stylesheet" media="screen and (max-width: 600px)" href="{% static 'css/smallstyles.css' %}">
 </head>
 <body>
@@ -16,20 +17,21 @@
             <div class="sidebar">
             {% block sidebar %}
                 <div class="sidebar-nav">
-                    <p><a href="{% url 'loopers:index' %}">Home</a></p>
-                    <p><a href="{% url 'loopers:loops'%}">Loops</a></p>
+                    <p class="menu-link"><a href="{% url 'loopers:index' %}">Home</a></p>
+                    <p class="menu-link"><a href="{% url 'loopers:loops'%}">Loops</a></p>
                  {% if user.is_authenticated %}
-                    <p><a href="{% url 'loopers:new_loop'%}">New Loop</a></p>
-                    <p><a href="{% url 'loopers:friends'%}">Friends</a></p>
-                    <br>
-                    <p>User: {{ user.get_username }}</p>   
-                    <p><a href="{% url 'loopers:settings'%}">Settings</a></p>
-                    <form id="logout-form" method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button type="submit">Log out</button>
-                    </form>
+                    <p class="menu-link"><a href="{% url 'loopers:new_loop'%}">New Loop</a></p>
+                    <p class="menu-link"><a href="{% url 'loopers:friends'%}">Friends</a></p>
+                    <div class="sidebar-nav-settings">
+                        <p class="menu-link">User: {{ user.get_username }}</p>   
+                        <p class="menu-link"><a href="{% url 'loopers:settings'%}">Settings</a></p>
+                        <form id="logout-form" method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Log out</button>
+                        </form>
+                    </div>
                  {% else %}
-                    <p><a href="{% url 'login'%}?next={% url 'loopers:index'%}">Login</a> / 
+                    <p class="menu-link"><a href="{% url 'login'%}?next={% url 'loopers:index'%}">Login</a> / 
                         <a href="{% url 'loopers:register' %}">Sign up</a>
                     </p>
                  {% endif %}
