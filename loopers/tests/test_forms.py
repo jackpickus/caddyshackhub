@@ -186,7 +186,7 @@ class ChangeEmailFormTest(TestCase):
             or form.fields["new_email"].label == "New email"
         )
 
-    def test_email_in_use(self):
+    def test_email_already_taken(self):
         user1 = User.objects.get(id=1)
         form = ChangeEmailForm(
             data={
@@ -195,3 +195,12 @@ class ChangeEmailFormTest(TestCase):
             }
         )
         self.assertFalse(form.is_valid())
+
+    def test_email_not_taken(self):
+        form = ChangeEmailForm(
+            data={
+                "new_email": "test1@test.com",
+                "password": "Test%456",
+            }
+        )
+        self.assertTrue(form.is_valid())
