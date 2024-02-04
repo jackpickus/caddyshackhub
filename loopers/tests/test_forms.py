@@ -187,7 +187,6 @@ class ChangeEmailFormTest(TestCase):
         )
 
     def test_email_already_taken(self):
-        user1 = User.objects.get(id=1)
         form = ChangeEmailForm(
             data={
                 "new_email": "test@test.com",
