@@ -4,7 +4,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from loopers.models import Loop
+from loopers.models import Loop, Caddy
+from loopers.forms import FollowCaddyForm
 
 
 class LoopListViewTest(TestCase):
@@ -82,3 +83,90 @@ class LoopListViewTest(TestCase):
             else:
                 self.assertTrue(last_date >= loop.date)
                 last_date = loop.date
+
+class FriendsListViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        self.test_caddy = Caddy.objects.create(
+            user=test_user,
+            loop_count=15,
+            activation_key="347efab47cd89fabd",
+            email_validated=1,
+        )
+
+        test_friend =User.objects.create_user(
+            username="test_friend", password="Stset0133!", email="testfriend@test.com"
+        )
+        test_friend.save()
+        Caddy.objects.create(
+            user=test_friend,
+            loop_count=0,
+            activation_key="347e228cbdd89fabd",
+            email_validated=1,
+        )
+
+        test_staff = User.objects.create(
+            username="test_staff",
+            password="Stset0133!",
+            email="teststaff@test.com",
+            is_staff=True,
+        )
+        test_staff.save()
+
+        num_following = 3 
+
+        for friend_id in range(num_following):
+            test_user2 = User.objects.create_user(
+                username=f"Friend {friend_id}",
+                password="Testpw21!",
+                email="test@testcase.com"
+            )
+            test_user2.save()
+            test_caddy2 = Caddy.objects.create(
+                user=test_user2,
+                loop_count=1,
+                activation_key="347efab47cd89fabd",
+                email_validated=1,
+            )
+            test_caddy2.save()
+            self.test_caddy.friends.add(test_caddy2)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:friends"))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/friends/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_logged_in_uses_correct_template(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:friends"))
+
+        # Check if user is logged in
+        self.assertEqual(str(response.context["user"]), "test_user1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/friends.html")
+
+    def test_get_number_of_caddys_following(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:friends"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('total_following' in response.context)
+        self.assertTrue('all_friends' in response.context)
+        self.assertEqual(response.context["total_following"], 3)
+
+    def test_redirect_to_friends_page_after_valid_form(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse('loopers:friends'), {'caddy_to_follow':'test_friend'})
+        self.assertRedirects(response, reverse('loopers:friends'))
+        get_response = self.client.get(reverse("loopers:friends"))
+        self.assertEqual(get_response.context["total_following"], 4)
+
+    def test_valid_form_but_staff(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse('loopers:friends'), {'caddy_to_follow':'test_staff'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/friends.html")
+        self.assertEqual(response.context["total_following"], 3)
