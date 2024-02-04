@@ -19,6 +19,11 @@ class CaddyModelTests(TestCase):
             email_validated=1,
         )
 
+    def test_str(self):
+        caddy = Caddy.objects.get(id=1)
+        caddy_str = caddy.__str__()
+        self.assertEqual(caddy_str, "test_user")
+
     def test_loop_count_label(self):
         caddy = Caddy.objects.get(id=1)
         field_label = caddy._meta.get_field("loop_count").verbose_name
@@ -60,6 +65,11 @@ class LoopModelTests(TestCase):
             notes="Good loop",
             caddy=user2,
         )
+
+    def test_loop_str(self):
+        loop = Loop.objects.get(id=1)
+        loop_str = loop.__str__()
+        self.assertEqual(loop_str, "Double carry for Mr. Testcase")
 
     def test_loop_title_label(self):
         loop = Loop.objects.get(id=1)
