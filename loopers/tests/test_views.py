@@ -170,3 +170,52 @@ class FriendsListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "loopers/friends.html")
         self.assertEqual(response.context["total_following"], 3)
+
+class IndexViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        test_caddy = Caddy.objects.create(
+            user=test_user,
+            loop_count=15,
+            activation_key="347efab47cd89fabd",
+            email_validated=1,
+        )
+        test_friend =User.objects.create_user(
+            username="test_friend", password="Stset0133!", email="testfriend@test.com"
+        )
+        test_friend.save()
+        self.test_caddy2 = Caddy.objects.create(
+            user=test_friend,
+            loop_count=0,
+            activation_key="347e228cbdd89fabd",
+            email_validated=1,
+        )
+        test_caddy.friends.add(self.test_caddy2)
+        
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get("/loopers/")
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_logged_in_uses_correct_template(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get("/loopers/")
+
+        # Check if user is logged in
+        self.assertEqual(str(response.context["user"]), "test_user1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/index.html")
+
+    def test_get_loop_count(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get("/loopers/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["loop_count"], 15)
+        self.assertEqual(response.context["total_money"], 0)
+        self.assertTrue('top_three_friends' in response.context)
+        top_three_friends = response.context['top_three_friends']
+        self.assertEqual(top_three_friends, {0: self.test_caddy2})
