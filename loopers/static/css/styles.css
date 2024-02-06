@@ -33,6 +33,19 @@ th {
     text-align: left;
 }
 
+.danger {
+    padding: 0.5rem;
+    color: black;
+    background-color: red;
+    border: #111;
+    border-style: solid;
+    border-radius: 5%;
+}
+.danger:hover {
+    color: red;
+    background-color: black;
+}
+
 .list-item {
     padding: 0rem 0.75rem 0.75rem 0rem;
 }
