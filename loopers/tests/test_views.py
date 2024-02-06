@@ -219,3 +219,86 @@ class IndexViewTest(TestCase):
         self.assertTrue('top_three_friends' in response.context)
         top_three_friends = response.context['top_three_friends']
         self.assertEqual(top_three_friends, {0: self.test_caddy2})
+
+class NewLoopViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        test_caddy = Caddy.objects.create(
+            user=test_user,
+            loop_count=0,
+            activation_key="347efab47cd89fabd",
+            email_validated=1,
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:new_loop"))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/new_loop/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_logged_in_uses_correct_template(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:new_loop"))
+
+        # Check if user is logged in
+        self.assertEqual(str(response.context["user"]), "test_user1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/new_loop.html")
+
+    def test_redirect_to_loops_page_after_valid_form(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse('loopers:new_loop'),
+            {
+                'loop_title':'test',
+                'date':'2024-02-05',
+                'num_loops':'1',
+                'money':'100',
+                'notes': '',
+            })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('loopers:loops'))
+
+    def test_render_new_loops_page_after_invalid_form(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse('loopers:new_loop'),
+            {
+                'loop_title':'',
+                'date':'2024-02-05',
+                'num_loops':'1',
+                'money':'100',
+                'notes': '',
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/new_loop.html")
+
+
+class SettingsViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        test_caddy = Caddy.objects.create(
+            user=test_user,
+            loop_count=15,
+            activation_key="347efab47cd89fabd",
+            email_validated=1,
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:settings"))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_logged_in_uses_correct_template(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:settings"))
+
+        # Check if user is logged in
+        self.assertEqual(str(response.context["user"]), "test_user1")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/settings.html")
