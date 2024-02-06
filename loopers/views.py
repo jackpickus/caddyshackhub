@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.urls import reverse
 from django.views import generic, View
@@ -190,10 +190,13 @@ def edit_loop(request, pk):
 
 @login_required
 def delete_loop(request, loop_id):
-    loop_to_delete = Loop.objects.get(pk=loop_id)
+    try:
+        loop_to_delete = Loop.objects.get(pk=loop_id)
+    except Loop.DoesNotExist:
+        raise Http404("Loop does not exist")
 
     if loop_to_delete.caddy.id != request.user.id:
-        return HttpResponseForbidden("You cannot delete what is not yours")
+        return HttpResponseForbidden("Loop does not exist")
 
     num_loops = loop_to_delete.num_loops
 
