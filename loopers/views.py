@@ -270,7 +270,7 @@ def unfollow_friend(request, friend_id):
     caddy.friends.remove(friend_id)
     return redirect(reverse("loopers:friends"))
 
-
+@login_required()
 def followers(request):
     caddy = Caddy.objects.get(user=request.user.id)
     followers = []
