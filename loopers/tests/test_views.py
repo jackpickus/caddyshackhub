@@ -370,3 +370,42 @@ class SettingsViewTest(TestCase):
         self.assertEqual(str(response.context["user"]), "test_user1")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "loopers/settings.html")
+
+class FollowersViewTest(TestCase):
+    def setUp(self):
+        test_user1 = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test2@test.com"
+        )
+        test_user1.save()
+        self.test_caddy1 = Caddy.objects.create(
+            user=test_user1,
+            loop_count=14,
+            activation_key="346efab47cd89fabd",
+            email_validated=0,
+        )
+
+        test_user2 = User.objects.create_user(
+            username="test_user2", password="Stset0133!", email="testfriend@test.com"
+        )
+        test_user2.save()
+        test_caddy2 = Caddy.objects.create(
+            user=test_user2,
+            loop_count=-1,
+            activation_key="346e228cbdd89fabd",
+            email_validated=0,
+        )
+        self.test_caddy1.friends.add(test_caddy2)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:followers"))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/friends/followers/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_get_followers(self):
+        self.client.login(username="test_user2", password="Stset0133!")
+        response = self.client.get(reverse("loopers:followers"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/followers.html")
+        followers = ''.join(response.context["followers"])
+        self.assertEqual(followers, self.test_caddy1.user.username)
