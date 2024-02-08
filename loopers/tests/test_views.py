@@ -171,6 +171,14 @@ class FriendsListViewTest(TestCase):
         self.assertTemplateUsed(response, "loopers/friends.html")
         self.assertEqual(response.context["total_following"], 3)
 
+    def test_unfollow_caddy(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        friend = User.objects.get(username="Friend 1")
+        response = self.client.get(reverse("loopers:unfollow_friend", kwargs={"friend_id": friend.id}))
+        self.assertRedirects(response, reverse("loopers:friends"))
+        response2 = self.client.get(reverse("loopers:friends"))
+        self.assertEqual(response2.context["total_following"], 2)
+
 class IndexViewTest(TestCase):
     def setUp(self):
         test_user = User.objects.create_user(
