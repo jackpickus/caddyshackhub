@@ -274,6 +274,66 @@ class NewLoopViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "loopers/new_loop.html")
 
+class DeleteLoopViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user0", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        self.test_caddy = Caddy.objects.create(
+            user=test_user,
+            loop_count=14,
+            activation_key="346efab47cd89fabd",
+            email_validated=0,
+        )
+
+        test_user1 = User.objects.create_user(
+            username="test_user1", password="Stset0133!", email="testfriend@test.com"
+        )
+        test_user1.save()
+        Caddy.objects.create(
+            user=test_user1,
+            loop_count=-1,
+            activation_key="346e228cbdd89fabd",
+            email_validated=0,
+        )
+        Loop.objects.create(
+            loop_title="Test User0s Loop",
+            date=datetime.date.today(),
+            num_loops=0,
+            money=59,
+            notes="test",
+            caddy=test_user,
+        )
+        Loop.objects.create(
+            loop_title="Test User1 Loop",
+            date=datetime.date.today(),
+            num_loops=0,
+            money=59,
+            notes="This is test user1s loop",
+            caddy=test_user1,
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:delete_loop", kwargs={"loop_id": 1}))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/delete/1")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_successfully_delete_loop(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.get(reverse("loopers:delete_loop", kwargs={"loop_id": 1}))
+        self.assertRedirects(response, reverse("loopers:loops"))
+
+    def test_delete_other_caddys_loop(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.get(reverse("loopers:delete_loop", kwargs={"loop_id": 2}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_non_existing_loop(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.get(reverse("loopers:delete_loop", kwargs={"loop_id": 8}))
+        self.assertEqual(response.status_code, 404)
 
 class SettingsViewTest(TestCase):
     def setUp(self):
