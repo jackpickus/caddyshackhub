@@ -20,6 +20,7 @@ class Caddy(models.Model):
     # save the 'new' email here, then once its verified, set the email field
     # in their user object to it
     change_email = models.EmailField(max_length=254, null=True, blank=True)
+    change_email_key = models.CharField(max_length=255, null=True, blank=True, default=1)
 
     friends = models.ManyToManyField("Caddy", symmetrical=False, blank=True)
 
