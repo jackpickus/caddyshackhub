@@ -571,3 +571,49 @@ class EditLoopViewTest(TestCase):
                 'notes': 'This is new note',
             })
         self.assertEqual(response.status_code, 404)
+
+class ChangePasswordViewTest(TestCase):
+    def setUp(self):
+        test_user1 = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test@test.com"
+        )
+        test_user1.save()
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.post(reverse("loopers:change_password"),
+            {
+                "old_password": "Stset01@",
+                "new_passowrd1": "TheNew103$",
+                "new_password2": "TheNew103$",
+            })
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/change_password/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_valid_form_submission(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse("loopers:change_password"),
+            {
+                "old_password": "Stset01@",
+                "new_password1": "TheNew103$",
+                "new_password2": "TheNew103$",
+            })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("loopers:settings"))
+
+    def test_invalid_form_submission(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse("loopers:change_password"),
+            {
+                "old_password": "Stset01@",
+                "new_password1": "TheNew103$",
+                "new_password2": "TheN$",
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/change_password.html")
+
+    def test_request_not_post(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:change_password"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/change_password.html")
