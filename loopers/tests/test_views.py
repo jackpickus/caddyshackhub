@@ -409,3 +409,31 @@ class FollowersViewTest(TestCase):
         self.assertTemplateUsed(response, "loopers/followers.html")
         followers = ''.join(response.context["followers"])
         self.assertEqual(followers, self.test_caddy1.user.username)
+
+class RegisterViewTest(TestCase):
+    def test_get_register_page(self):
+        response = self.client.get(reverse("loopers:register"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/register.html")
+
+    def test_register_new_user_valid_form(self):
+        response = self.client.post(reverse("loopers:register"),
+            {
+                "username":"new_user1",
+                "password1":"MyPass123!",
+                "password2":"MyPass123!",
+                "email": "example@test.com"
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_register_new_user_invalid_form(self):
+        response = self.client.post(reverse("loopers:register"),
+            {
+                "username":"new_user1",
+                "password1":"MyPass123",
+                "password2":"MyPass123!",
+                "email": "example@test.com"
+            }
+        )
+        self.assertEqual(response.status_code, 200)
