@@ -520,7 +520,7 @@ class EditLoopViewTest(TestCase):
         self.assertTrue(response.url.startswith('/accounts/login'))
 
     def test_edit_loop_valid_form(self):
-        self.client.login(username="test_user0", password="Stset01@")
+        self.client.login(username="test_user1", password="Stset01@")
         response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}), 
             {
                 'loop_title':'test edit',
@@ -532,7 +532,7 @@ class EditLoopViewTest(TestCase):
         self.assertRedirects(response, reverse("loopers:loops"))
 
     def test_edit_loop_invalid_form(self):
-        self.client.login(username="test_user0", password="Stset01@")
+        self.client.login(username="test_user1", password="Stset01@")
         response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}), 
             {
                 'loop_title':'',
@@ -544,12 +544,12 @@ class EditLoopViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_request_not_post(self):
-        self.client.login(username="test_user0", password="Stset01@")
+        self.client.login(username="test_user1", password="Stset01@")
         response = self.client.get(reverse("loopers:edit_loop", kwargs={"pk": 1}))
         self.assertEqual(response.status_code, 200)
 
     def test_edit_other_caddys_loop(self):
-        self.client.login(username="test_user0", password="Stset01@")
+        self.client.login(username="test_user1", password="Stset01@")
         response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 2}), 
             {
                 'loop_title':'test edit',
@@ -561,7 +561,7 @@ class EditLoopViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_edit_non_existing_loop(self):
-        self.client.login(username="test_user0", password="Stset01@")
+        self.client.login(username="test_user1", password="Stset01@")
         response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 8}), 
             {
                 'loop_title':'test edit',
