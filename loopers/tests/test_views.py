@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 from loopers.models import Loop, Caddy
-from loopers.forms import FollowCaddyForm
 
 
 class LoopListViewTest(TestCase):
@@ -234,7 +233,7 @@ class NewLoopViewTest(TestCase):
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
         test_user.save()
-        test_caddy = Caddy.objects.create(
+        Caddy.objects.create(
             user=test_user,
             loop_count=0,
             activation_key="347efab47cd89fabd",
@@ -288,7 +287,7 @@ class DeleteLoopViewTest(TestCase):
             username="test_user0", password="Stset01@", email="test2@test.com"
         )
         test_user.save()
-        self.test_caddy = Caddy.objects.create(
+        Caddy.objects.create(
             user=test_user,
             loop_count=14,
             activation_key="346efab47cd89fabd",
@@ -349,12 +348,6 @@ class SettingsViewTest(TestCase):
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
         test_user.save()
-        test_caddy = Caddy.objects.create(
-            user=test_user,
-            loop_count=15,
-            activation_key="347efab47cd89fabd",
-            email_validated=1,
-        )
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:settings"))
@@ -422,7 +415,7 @@ class RegisterViewTest(TestCase):
                 "username":"new_user1",
                 "password1":"MyPass123!",
                 "password2":"MyPass123!",
-                "email": "example@test.com"
+                "email":"example@test.com"
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -437,3 +430,25 @@ class RegisterViewTest(TestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
+
+class ActivateAccountViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        Caddy.objects.create(
+            user=test_user,
+            loop_count=14,
+            activation_key="346efab47cd89fabd",
+            email_validated=0,
+        )
+
+    def test_activate_account_successfully(self):
+        response = self.client.get(reverse("loopers:activate"), {"key":"346efab47cd89fabd"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/activated.html")
+
+    def test_activate_account_fail(self):
+        response = self.client.get(reverse("loopers:activate"), {"key":"346efab47cd8"})
+        self.assertEqual(response.status_code, 404)
