@@ -300,7 +300,7 @@ class DeleteLoopViewTest(TestCase):
         test_user1.save()
         Caddy.objects.create(
             user=test_user1,
-            loop_count=-1,
+            loop_count=1,
             activation_key="346e228cbdd89fabd",
             email_validated=0,
         )
