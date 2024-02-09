@@ -452,3 +452,35 @@ class ActivateAccountViewTest(TestCase):
     def test_activate_account_fail(self):
         response = self.client.get(reverse("loopers:activate"), {"key":"346efab47cd8"})
         self.assertEqual(response.status_code, 404)
+
+class LoopDetailViewTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user", password="Stset01@", email="test2@test.com"
+        )
+        test_user.save()
+        Loop.objects.create(
+            loop_title="Test Users Loop",
+            date=datetime.date.today(),
+            num_loops=0,
+            money=59,
+            notes="test",
+            caddy=test_user,
+        )  
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:followers"))
+        response = self.client.get(reverse("loopers:loop-detail", kwargs={"pk":1}))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/1")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+    
+    def test_get_loop_detail_successfully(self):
+        self.client.login(username="test_user", password="Stset01@")
+        response = self.client.get(reverse("loopers:loop-detail", kwargs={"pk":1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_loop_detail_loop_non_existent(self):
+        self.client.login(username="test_user", password="Stset01@")
+        response = self.client.get(reverse("loopers:loop-detail", kwargs={"pk":10}))
+        self.assertEqual(response.status_code, 404)
