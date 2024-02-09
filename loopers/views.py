@@ -166,8 +166,12 @@ def new_loop(request):
     return render(request, "loopers/new_loop.html", {"form": f})
 
 
+@login_required
 def edit_loop(request, pk):
-    loop_to_edit = Loop.objects.get(pk=pk)
+    try:
+        loop_to_edit = Loop.objects.get(pk=pk)
+    except:
+        raise Http404("Loop does not exist")
 
     # prevent other users from editing other user's loops
     if loop_to_edit.caddy.id != request.user.id:
