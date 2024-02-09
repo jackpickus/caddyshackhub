@@ -126,16 +126,13 @@ def activate_account(request):
     return render(request, "loopers/activated.html")
 
 
-class DetailView(generic.DetailView):
+class DetailView(LoginRequiredMixin, generic.DetailView):
     model = Loop
     template_name = "loopers/detail.html"
 
     # make sure the user can only view their loops and no one else's
     def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return Loop.objects.filter(caddy=self.request.user)
-        else:
-            return Loop.objects.none()
+        return Loop.objects.filter(caddy=self.request.user)
 
 
 class LoopListView(LoginRequiredMixin, generic.ListView):
