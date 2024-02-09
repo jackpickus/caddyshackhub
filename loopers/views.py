@@ -215,6 +215,7 @@ class Settings(LoginRequiredMixin, View):
         return render(request, "loopers/settings.html")
 
 
+@login_required
 def change_password(request):
     if request.method == "POST":
         f = PasswordChangeForm(request.user, request.POST)
