@@ -484,3 +484,90 @@ class LoopDetailViewTest(TestCase):
         self.client.login(username="test_user", password="Stset01@")
         response = self.client.get(reverse("loopers:loop-detail", kwargs={"pk":10}))
         self.assertEqual(response.status_code, 404)
+
+class EditLoopViewTest(TestCase):
+    def setUp(self):
+        test_user1 = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test@test.com"
+        )
+        test_user1.save()
+
+        test_user2 = User.objects.create_user(
+            username="test_user2", password="Stset0133!", email="test2@test.com"
+        )
+        test_user2.save()
+        Loop.objects.create(
+            loop_title="Test User1 Loop",
+            date=datetime.date.today(),
+            num_loops=1,
+            money=59,
+            notes="test",
+            caddy=test_user1,
+        )
+        Loop.objects.create(
+            loop_title="Test User2 Loop",
+            date=datetime.date.today(),
+            num_loops=1,
+            money=59,
+            notes="This is test user2s loop",
+            caddy=test_user2,
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}))
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/1/edit_loop")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_edit_loop_valid_form(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}), 
+            {
+                'loop_title':'test edit',
+                'date':'2024-02-05',
+                'num_loops':'2',
+                'money':'100',
+                'notes': 'This is new note',
+            })
+        self.assertRedirects(response, reverse("loopers:loops"))
+
+    def test_edit_loop_invalid_form(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}), 
+            {
+                'loop_title':'',
+                'date':'2024-02-05',
+                'num_loops':'2',
+                'money':'100',
+                'notes': 'This is new note',
+            })
+        self.assertEqual(response.status_code, 200)
+
+    def test_request_not_post(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.get(reverse("loopers:edit_loop", kwargs={"pk": 1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_other_caddys_loop(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 2}), 
+            {
+                'loop_title':'test edit',
+                'date':'2024-02-05',
+                'num_loops':'2',
+                'money':'100',
+                'notes': 'This is new note',
+            })
+        self.assertEqual(response.status_code, 403)
+
+    def test_edit_non_existing_loop(self):
+        self.client.login(username="test_user0", password="Stset01@")
+        response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 8}), 
+            {
+                'loop_title':'test edit',
+                'date':'2024-02-05',
+                'num_loops':'2',
+                'money':'100',
+                'notes': 'This is new note',
+            })
+        self.assertEqual(response.status_code, 404)
