@@ -617,3 +617,82 @@ class ChangePasswordViewTest(TestCase):
         response = self.client.get(reverse("loopers:change_password"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "loopers/change_password.html")
+
+class ChangeEmailViewTest(TestCase):
+    def setUp(self):
+        test_user1 = User.objects.create_user(
+            username="test_user1", password="Stset01@", email="test@test.com"
+        )
+        Caddy.objects.create(
+            user=test_user1,
+            loop_count=15,
+            activation_key="347efab47cd89fabd",
+            email_validated=1,
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.post(reverse("loopers:change_email"),
+            {
+                "password": "Stset01@",
+                "new_email": "new@email.com",
+            })
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/change_email/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_valid_form_submission(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse("loopers:change_email"),
+            {
+                "password": "Stset01@",
+                "new_email": "new@email.com",
+            })
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("loopers:settings"))
+
+    def test_invalid_form_wrong_password(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.post(reverse("loopers:change_email"),
+            {
+                "password": "Sts",
+                "new_email": "new@email.com",
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/change_email.html")
+
+    def test_request_not_post(self):
+        self.client.login(username="test_user1", password="Stset01@")
+        response = self.client.get(reverse("loopers:change_email"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/change_email.html")
+
+class ChangeEmailVerificationTest(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            username="test_user", password="Stset01@", email="test2@test.com"
+        )
+        Caddy.objects.create(
+            user=test_user,
+            loop_count=14,
+            activation_key="346efab47cd89fabd",
+            email_validated=1,
+            change_email="newemail@test.com",
+            change_email_key="123456",
+        )
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("loopers:email_verification"), {"key":"123456"})
+        self.assertRedirects(response, "/accounts/login/?next=/loopers/email_verification/?key=123456")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/accounts/login'))
+
+    def test_activate_account_successfully(self):
+        self.client.login(username="test_user", password="Stset01@")
+        response = self.client.get(reverse("loopers:email_verification"), {"key":"123456"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "loopers/settings.html")
+
+    def test_activate_account_fail(self):
+        self.client.login(username="test_user", password="Stset01@")
+        response = self.client.get(reverse("loopers:email_verification"), {"key":"123"})
+        self.assertEqual(response.status_code, 404)
