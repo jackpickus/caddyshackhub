@@ -453,6 +453,10 @@ class ActivateAccountViewTest(TestCase):
         response = self.client.get(reverse("loopers:activate"), {"key":"346efab47cd8"})
         self.assertEqual(response.status_code, 404)
 
+    def test_activate_account_no_key(self):
+        response = self.client.get(reverse("loopers:activate"), {"key":""})
+        self.assertEqual(response.status_code, 404)
+
 class LoopDetailViewTest(TestCase):
     def setUp(self):
         test_user = User.objects.create_user(
@@ -695,4 +699,9 @@ class ChangeEmailVerificationTest(TestCase):
     def test_activate_account_fail(self):
         self.client.login(username="test_user", password="Stset01@")
         response = self.client.get(reverse("loopers:email_verification"), {"key":"123"})
+        self.assertEqual(response.status_code, 404)
+
+    def test_verify_email_no_key(self):
+        self.client.login(username="test_user", password="Stset01@")
+        response = self.client.get(reverse("loopers:email_verification"), {"key":""})
         self.assertEqual(response.status_code, 404)
