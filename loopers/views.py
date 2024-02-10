@@ -305,7 +305,6 @@ def followers(request):
 
 @login_required()
 def change_email(request):
-    user = request.user
     caddy = Caddy.objects.get(user=request.user.id)
 
     if request.method == "POST":
@@ -320,7 +319,7 @@ def change_email(request):
                 caddy.change_email = new_email
                 caddy.save()
 
-                activation_key = helpers.generate_activation_key(
+                change_email_key = helpers.generate_activation_key(
                     username=request.user.username
                 )
 
@@ -328,7 +327,7 @@ def change_email(request):
                 message = """\n
                     Hi there! You recently added the new email address {0} to your account. Please visit the following link to verify your new email \n\n{1}://{2}/loopers/email_verification/?key={3}
                         """.format(
-                    new_email, request.scheme, request.get_host(), activation_key
+                    new_email, request.scheme, request.get_host(), change_email_key
                 )
 
                 error = False
@@ -353,6 +352,8 @@ def change_email(request):
                         messages.INFO,
                         "Unable to send email verification. Please try again",
                     )
+                if not error:
+                    caddy.change_email_key = change_email_key
 
                 return redirect(reverse("loopers:settings"))
             else:
@@ -370,7 +371,7 @@ def email_verification(request):
     if not key:
         raise Http404()
 
-    caddy = Caddy.objects.get(user=request.user.id)
+    caddy = get_object_or_404(Caddy, change_email_key=key)
     user = request.user
     user.email = caddy.change_email
     user.save()
