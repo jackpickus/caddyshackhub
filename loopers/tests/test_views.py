@@ -13,8 +13,6 @@ class LoopListViewTest(TestCase):
             username="test_user2", password="Stset01@", email="test2@test.com"
         )
 
-        test_user2.save()
-
         # Create 13 loops for pagination tests
         number_of_loops = 13
 
@@ -35,7 +33,7 @@ class LoopListViewTest(TestCase):
         self.assertRedirects(response, "/accounts/login/?next=/loopers/loops/")
 
     def test_logged_in_uses_correct_template(self):
-        login = self.client.login(username="test_user2", password="Stset01@")
+        self.client.login(username="test_user2", password="Stset01@")
         response = self.client.get(reverse("loopers:loops"))
 
         # Check if user is logged in
@@ -47,7 +45,7 @@ class LoopListViewTest(TestCase):
         self.assertTemplateUsed(response, "loopers/loop_list.html")
 
     def test_pagination_is_ten(self):
-        login = self.client.login(username="test_user2", password="Stset01@")
+        self.client.login(username="test_user2", password="Stset01@")
         response = self.client.get(reverse("loopers:loops"))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -55,7 +53,7 @@ class LoopListViewTest(TestCase):
         self.assertTrue(len(response.context["loop_list"]) == 10)
 
     def test_lists_all_loops(self):
-        login = self.client.login(username="test_user2", password="Stset01@")
+        self.client.login(username="test_user2", password="Stset01@")
         # Get second page and confirm it has (exactly) remaining 3 items
         response = self.client.get(reverse("loopers:loops") + "?page=2")
         self.assertEqual(response.status_code, 200)
@@ -64,7 +62,7 @@ class LoopListViewTest(TestCase):
         self.assertTrue(len(response.context["loop_list"]) == 3)
 
     def test_loops_ordered_by_date_descending(self):
-        login = self.client.login(username="test_user2", password="Stset01@")
+        self.client.login(username="test_user2", password="Stset01@")
         response = self.client.get(reverse("loopers:loops"))
 
         # Check if user is logged in
@@ -88,7 +86,6 @@ class FriendsListViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         self.test_caddy = Caddy.objects.create(
             user=test_user,
             loop_count=15,
@@ -96,10 +93,9 @@ class FriendsListViewTest(TestCase):
             email_validated=1,
         )
 
-        test_friend =User.objects.create_user(
+        test_friend = User.objects.create_user(
             username="test_friend", password="Stset0133!", email="testfriend@test.com"
         )
-        test_friend.save()
         Caddy.objects.create(
             user=test_friend,
             loop_count=0,
@@ -107,13 +103,12 @@ class FriendsListViewTest(TestCase):
             email_validated=1,
         )
 
-        test_staff = User.objects.create(
+        User.objects.create(
             username="test_staff",
             password="Stset0133!",
             email="teststaff@test.com",
             is_staff=True,
         )
-        test_staff.save()
 
         num_following = 3 
 
@@ -123,7 +118,6 @@ class FriendsListViewTest(TestCase):
                 password="Testpw21!",
                 email="test@testcase.com"
             )
-            test_user2.save()
             test_caddy2 = Caddy.objects.create(
                 user=test_user2,
                 loop_count=1,
@@ -183,7 +177,6 @@ class IndexViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         test_caddy = Caddy.objects.create(
             user=test_user,
             loop_count=15,
@@ -193,7 +186,6 @@ class IndexViewTest(TestCase):
         test_friend =User.objects.create_user(
             username="test_friend", password="Stset0133!", email="testfriend@test.com"
         )
-        test_friend.save()
         self.test_caddy2 = Caddy.objects.create(
             user=test_friend,
             loop_count=0,
@@ -232,7 +224,6 @@ class NewLoopViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         Caddy.objects.create(
             user=test_user,
             loop_count=0,
@@ -286,7 +277,6 @@ class DeleteLoopViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user0", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         Caddy.objects.create(
             user=test_user,
             loop_count=14,
@@ -297,7 +287,6 @@ class DeleteLoopViewTest(TestCase):
         test_user1 = User.objects.create_user(
             username="test_user1", password="Stset0133!", email="testfriend@test.com"
         )
-        test_user1.save()
         Caddy.objects.create(
             user=test_user1,
             loop_count=1,
@@ -347,7 +336,6 @@ class SettingsViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:settings"))
@@ -369,7 +357,6 @@ class FollowersViewTest(TestCase):
         test_user1 = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test2@test.com"
         )
-        test_user1.save()
         self.test_caddy1 = Caddy.objects.create(
             user=test_user1,
             loop_count=14,
@@ -380,7 +367,6 @@ class FollowersViewTest(TestCase):
         test_user2 = User.objects.create_user(
             username="test_user2", password="Stset0133!", email="testfriend@test.com"
         )
-        test_user2.save()
         test_caddy2 = Caddy.objects.create(
             user=test_user2,
             loop_count=-1,
@@ -436,7 +422,6 @@ class ActivateAccountViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         Caddy.objects.create(
             user=test_user,
             loop_count=14,
@@ -462,7 +447,6 @@ class LoopDetailViewTest(TestCase):
         test_user = User.objects.create_user(
             username="test_user", password="Stset01@", email="test2@test.com"
         )
-        test_user.save()
         Loop.objects.create(
             loop_title="Test Users Loop",
             date=datetime.date.today(),
@@ -494,12 +478,9 @@ class EditLoopViewTest(TestCase):
         test_user1 = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test@test.com"
         )
-        test_user1.save()
-
         test_user2 = User.objects.create_user(
             username="test_user2", password="Stset0133!", email="test2@test.com"
         )
-        test_user2.save()
         Loop.objects.create(
             loop_title="Test User1 Loop",
             date=datetime.date.today(),
@@ -581,7 +562,6 @@ class ChangePasswordViewTest(TestCase):
         test_user1 = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test@test.com"
         )
-        test_user1.save()
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.post(reverse("loopers:change_password"),
