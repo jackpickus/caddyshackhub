@@ -690,13 +690,13 @@ class ChangeEmailVerificationTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
-    def test_activate_account_successfully(self):
+    def test_verify_email_successfully(self):
         self.client.login(username="test_user", password="Stset01@")
         response = self.client.get(reverse("loopers:email_verification"), {"key":"123456"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "loopers/settings.html")
 
-    def test_activate_account_fail(self):
+    def test_verify_email_fail(self):
         self.client.login(username="test_user", password="Stset01@")
         response = self.client.get(reverse("loopers:email_verification"), {"key":"123"})
         self.assertEqual(response.status_code, 404)
