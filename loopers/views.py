@@ -65,9 +65,12 @@ def register(request):
                 username=request.POST["username"]
             )
 
-            subject = "MyLoopCount Email Verification"
+            subject = "CaddyShackHub Confirm Account"
             message = """\n
-                Please visit the following link to verify your email \n\n{0}://{1}/loopers/activate/account/?key={2}
+                Thank you for signing up for an account on CaddyShackHub! The premier loop tracker.
+                \nPlease visit the following link to verify your email and confirm your account sign up. You won't be able to login until you do so.
+                \n\n{0}://{1}/loopers/activate/account/?key={2}
+                \n\n- The CaddyShackHub team
                     """.format(
                 request.scheme, request.get_host(), activation_key
             )
@@ -323,9 +326,11 @@ def change_email(request):
                     username=request.user.username
                 )
 
-                subject = "Verify your MyLoopCount email address"
+                subject = "CaddyShackHub New Email"
                 message = """\n
-                    Hi there! You recently added the new email address {0} to your account. Please visit the following link to verify your new email \n\n{1}://{2}/loopers/email_verification/?key={3}
+                    Hi there! You recently added the new email address {0} to your account.
+                    \nPlease visit the following link to verify your new email \n\n{1}://{2}/loopers/email_verification/?key={3}
+                    \n\n- The CaddyShackHub team
                         """.format(
                     new_email, request.scheme, request.get_host(), change_email_key
                 )
