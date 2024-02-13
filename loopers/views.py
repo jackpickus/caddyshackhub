@@ -222,7 +222,9 @@ class Settings(LoginRequiredMixin, View):
 def change_password(request):
     if request.method == "POST":
         f = PasswordChangeForm(request.user, request.POST)
-        if f.is_valid():
+        caddy = Caddy.objects.get(user=request.user.id)
+        email_is_valid = caddy.email_validated
+        if f.is_valid() and email_is_valid:
             user = f.save()
             update_session_auth_hash(request, user)
 
