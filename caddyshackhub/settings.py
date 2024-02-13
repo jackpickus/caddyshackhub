@@ -29,8 +29,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
-EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
 
 ALLOWED_HOSTS = []
 
@@ -127,7 +125,13 @@ STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = '/loopers'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
+EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
