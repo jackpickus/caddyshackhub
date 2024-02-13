@@ -322,7 +322,6 @@ def change_email(request):
 
             if password_match:
                 caddy.change_email = new_email
-                caddy.save()
 
                 change_email_key = helpers.generate_activation_key(
                     username=request.user.username
@@ -359,8 +358,11 @@ def change_email(request):
                         messages.INFO,
                         "Unable to send email verification. Please try again",
                     )
+
                 if not error:
                     caddy.change_email_key = change_email_key
+                    caddy.email_validated = False
+                    caddy.save()
 
                 return redirect(reverse("loopers:settings"))
             else:
@@ -382,6 +384,8 @@ def email_verification(request):
     user = request.user
     user.email = caddy.change_email
     user.save()
+    caddy.email_validated = True
+    caddy.save()
 
     messages.success(request, "email successfully changed!")
 
