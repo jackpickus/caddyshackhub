@@ -133,6 +133,9 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
 EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
 
+DEFAULT_FROM_EMAIL = 'CaddyShackHub <noreply@caddyshackhub.com>'
+EMAIL_SUBJECT_PREFIX = '[CaddyShackHub] '
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

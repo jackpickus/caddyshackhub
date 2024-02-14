@@ -78,9 +78,7 @@ def register(request):
             error = False
 
             try:
-                send_mail(
-                    subject, message, settings.SERVER_EMAIL, [request.POST["email"]]
-                )
+                send_mail(subject=subject, message=message, from_email=None, recipient_list=[request.POST["email"]])
                 messages.add_message(
                     request,
                     messages.INFO,
@@ -340,10 +338,10 @@ def change_email(request):
 
                 try:
                     send_mail(
-                        subject,
-                        message,
-                        settings.SERVER_EMAIL,
-                        [request.POST["new_email"]],
+                        subject=subject,
+                        message=message,
+                        from_email=None,
+                        recipient_list=[request.POST["new_email"]],
                     )
                     messages.add_message(
                         request,
