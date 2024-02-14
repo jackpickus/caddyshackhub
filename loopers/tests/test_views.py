@@ -30,7 +30,7 @@ class LoopListViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:loops"))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/loops/")
+        self.assertRedirects(response, "/accounts/login/?next=/loops/")
 
     def test_logged_in_uses_correct_template(self):
         self.client.login(username="test_user2", password="Stset01@")
@@ -129,7 +129,7 @@ class FriendsListViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:friends"))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/friends/")
+        self.assertRedirects(response, "/accounts/login/?next=/friends/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -195,14 +195,14 @@ class IndexViewTest(TestCase):
         test_caddy.friends.add(self.test_caddy2)
         
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get("/loopers/")
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/")
+        response = self.client.get("")
+        self.assertRedirects(response, "/accounts/login/?next=/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
     def test_logged_in_uses_correct_template(self):
         self.client.login(username="test_user1", password="Stset01@")
-        response = self.client.get("/loopers/")
+        response = self.client.get("")
 
         # Check if user is logged in
         self.assertEqual(str(response.context["user"]), "test_user1")
@@ -211,7 +211,7 @@ class IndexViewTest(TestCase):
 
     def test_get_loop_count(self):
         self.client.login(username="test_user1", password="Stset01@")
-        response = self.client.get("/loopers/")
+        response = self.client.get("")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["loop_count"], 15)
         self.assertEqual(response.context["total_money"], 0)
@@ -233,7 +233,7 @@ class NewLoopViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:new_loop"))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/new_loop/")
+        self.assertRedirects(response, "/accounts/login/?next=/loop/new_loop/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -312,7 +312,7 @@ class DeleteLoopViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:delete_loop", kwargs={"loop_id": 1}))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/delete/1")
+        self.assertRedirects(response, "/accounts/login/?next=/loop/delete/1")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -339,7 +339,7 @@ class SettingsViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:settings"))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/")
+        self.assertRedirects(response, "/accounts/login/?next=/settings/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -377,7 +377,7 @@ class FollowersViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:followers"))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/friends/followers/")
+        self.assertRedirects(response, "/accounts/login/?next=/friends/followers/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -459,7 +459,7 @@ class LoopDetailViewTest(TestCase):
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:followers"))
         response = self.client.get(reverse("loopers:loop-detail", kwargs={"pk":1}))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/1")
+        self.assertRedirects(response, "/accounts/login/?next=/loop/1")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
     
@@ -500,7 +500,7 @@ class EditLoopViewTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.post(reverse("loopers:edit_loop", kwargs={"pk": 1}))
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/loop/1/edit_loop")
+        self.assertRedirects(response, "/accounts/login/?next=/loop/1/edit_loop")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -562,6 +562,12 @@ class ChangePasswordViewTest(TestCase):
         test_user1 = User.objects.create_user(
             username="test_user1", password="Stset01@", email="test@test.com"
         )
+        Caddy.objects.create(
+            user=test_user1,
+            loop_count=0,
+            activation_key="347e228cbdd89fabd",
+            email_validated=1,
+        )
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.post(reverse("loopers:change_password"),
@@ -570,7 +576,7 @@ class ChangePasswordViewTest(TestCase):
                 "new_passowrd1": "TheNew103$",
                 "new_password2": "TheNew103$",
             })
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/change_password/")
+        self.assertRedirects(response, "/accounts/login/?next=/settings/change_password/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -620,7 +626,7 @@ class ChangeEmailViewTest(TestCase):
                 "password": "Stset01@",
                 "new_email": "new@email.com",
             })
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/settings/change_email/")
+        self.assertRedirects(response, "/accounts/login/?next=/settings/change_email/")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
@@ -666,7 +672,7 @@ class ChangeEmailVerificationTest(TestCase):
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse("loopers:email_verification"), {"key":"123456"})
-        self.assertRedirects(response, "/accounts/login/?next=/loopers/email_verification/?key=123456")
+        self.assertRedirects(response, "/accounts/login/?next=/email_verification/?key=123456")
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login'))
 
