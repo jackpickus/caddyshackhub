@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Caddy, Loop
 from .forms import NewUserForm, NewLoopForm, FollowCaddyForm, ChangeEmailForm
 from loopers import helpers
+import logging
 
 
 class IndexView(LoginRequiredMixin, generic.ListView):
@@ -78,7 +79,13 @@ def register(request):
             error = False
 
             try:
-                send_mail(subject=subject, message=message, from_email=None, recipient_list=[request.POST["email"]])
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=None,
+                    recipient_list=[request.POST["email"]],
+                    fail_silently=False,
+                )
                 messages.add_message(
                     request,
                     messages.INFO,
@@ -92,6 +99,7 @@ def register(request):
                     messages.INFO,
                     "Unable to send email verification. Please try again",
                 )
+                logging.exception("Send email failure")
 
             if not error:
                 u = User.objects.create_user(
@@ -342,6 +350,7 @@ def change_email(request):
                         message=message,
                         from_email=None,
                         recipient_list=[request.POST["new_email"]],
+                        fail_silently=False,
                     )
                     messages.add_message(
                         request,
@@ -356,6 +365,7 @@ def change_email(request):
                         messages.INFO,
                         "Unable to send email verification. Please try again",
                     )
+                    logging.exception("Send email failure")
 
                 if not error:
                     caddy.change_email_key = change_email_key
@@ -388,3 +398,6 @@ def email_verification(request):
     messages.success(request, "email successfully changed!")
 
     return render(request, "loopers/settings.html")
+
+def terms_of_service(request):
+    return render(request, "loopers/terms_of_service.html")
