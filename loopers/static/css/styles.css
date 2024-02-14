@@ -35,6 +35,7 @@ th {
 
 .danger {
     padding: 0.5rem;
+    line-height: 5rem;
     color: black;
     background-color: red;
     border: #111;
