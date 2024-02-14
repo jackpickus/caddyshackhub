@@ -3,6 +3,7 @@
 {% block content %}
     <h3>Settings</h3>
     <p>User: {{ user.get_username }}</p>
+    <p>Email: {{ user.email }}</p>
     <div>
         {% if messages %}
         <ul>
