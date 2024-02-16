@@ -55,11 +55,3 @@ th {
     padding-top: 1.25rem;
     font-size: 1.33rem;
 }
-
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-}
