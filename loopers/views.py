@@ -1,6 +1,6 @@
 from django.http import HttpResponseForbidden, Http404
 from django.shortcuts import render, redirect, get_object_or_404, Http404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic, View
 from django.views.generic.edit import FormMixin
 from django.db.models import F
@@ -241,8 +241,13 @@ def change_password(request):
 
     return render(request, "loopers/change_password.html", {"form": f})
 
+class DeleteAccount(LoginRequiredMixin, generic.DeleteView):
+    model = User
+    template_name = 'loopers/delete_user_confirm.html'
+    success_message = 'Account successfully deleted'
+    success_url = reverse_lazy('loopers:register')
 
-class FriendsListView(FormMixin, LoginRequiredMixin, generic.ListView):
+class FriendsListView(LoginRequiredMixin, FormMixin, generic.ListView):
     context_object_name = "all_friends"
     template_name = "loopers/friends.html"
     form_class = FollowCaddyForm
