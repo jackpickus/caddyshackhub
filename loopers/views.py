@@ -401,3 +401,6 @@ def email_verification(request):
 
 def terms_of_service(request):
     return render(request, "loopers/terms_of_service.html")
+
+def privacy_policy(request):
+    return render(request, "loopers/privacy_policy.html")
