@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 class Caddy(models.Model):
     # one to one because a caddy can only have one user and a user can only be one caddy
     # SET_NULL: the reference to a user will be null
-    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
 
     activation_key = models.CharField(max_length=255, default=1)
     email_validated = models.BooleanField(default=False)
