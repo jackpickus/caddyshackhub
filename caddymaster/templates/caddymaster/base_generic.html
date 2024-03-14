@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}CaddyShackHub{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" media="screen and (min-width: 900px)" href="{% static 'css/bigstyles.css' %}">
+    <link rel="stylesheet" media="screen and (max-width: 600px)" href="{% static 'css/smallstyles.css' %}">
+</head>
+<body>
+    <div>
+        <h1>CaddyMasterHub</h1>
+        <div class="main-content">
+        </div>
+    </div>
+</body>
+</html>
