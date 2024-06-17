@@ -409,3 +409,6 @@ def terms_of_service(request):
 
 def privacy_policy(request):
     return render(request, "loopers/privacy_policy.html")
+
+def about(request):
+    return render(request, "loopers/about.html")
