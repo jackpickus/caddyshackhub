@@ -5,14 +5,10 @@ from django.contrib.auth.models import User
 
 from loopers.models import Caddy
 
-class CaddyMaster(models.Model):
-
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    email_validated = models.BooleanField(default=False)
-    change_email = models.EmailField(max_length=254, null=True, blank=True)
-
-    def __str__(self):
-        return self.user.username
+class CaddyMaster(Caddy):
+    class Meta:
+        proxy: True
+        permissions = [("can_assign_loops", "Can assign loops")]
 
 class CaddyShack(models.Model):
     caddy_shack_title = models.CharField(max_length=100)
