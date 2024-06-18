@@ -23,3 +23,9 @@ class CaddyShack(models.Model):
 
     def __str__(self):
         return self.caddy_shack_title
+
+class TeeTime(models.Model):
+    golfers = models.JSONField(null=False)
+    time = models.DateField(default=datetime.date.today)
+    position = models.IntegerField(null=True, blank=True)
+    flight = models.CharField(max_length=4, null=True, blank=True)
