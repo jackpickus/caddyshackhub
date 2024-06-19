@@ -28,4 +28,8 @@ class TeeTime(models.Model):
     caddy = models.CharField(max_length=100)
     time = models.DateField(default=datetime.date.today)
     position = models.IntegerField(null=True, blank=True)
-    flight = models.CharField(max_length=4, null=True, blank=True)
+    flight = models.CharField(max_length=4, blank=True)
+
+    def __str__(self) -> str:
+        golfers_and_time = self.golfers + self.time.strftime
+        return golfers_and_time 
