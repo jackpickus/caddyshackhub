@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import CaddyMaster, TeeTime, CaddyShack
+
+admin.site.register(CaddyMaster)
+admin.site.register(TeeTime)
+admin.site.register(CaddyShack)

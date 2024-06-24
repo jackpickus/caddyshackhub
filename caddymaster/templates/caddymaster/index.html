@@ -1,1 +1,47 @@
 {% extends "caddymaster/base_generic.html" %}
+
+{% block content %}
+    <h3>Dashboard</h3>
+    <a href="">Assign Loop</a>
+    <a href="">Add Group</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Players</th>
+                <th>Caddy</th>
+                <th>Time</th>
+                <th>Pos</th>
+                <th>Flight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tee_time in teetime_list %}
+            <tr>
+                <td>{{ tee_time.golfers }}</td>
+                <td>{{ tee_time.caddy }}</td>
+                <td>{{ tee_time.time }}</td>
+                <td>{{ tee_time.position }}</td>
+                <td>{{ tee_time.flight }}</td>
+            </tr>
+            {% endfor %}
+            <!-- <tr>
+                <td>Smith & Johnson</td>
+                <td>Chauncey</td>
+                <td>8 AM</td>
+                <td>1</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>Poth & Perkins</td>
+                <td>Phil</td>
+                <td>8 AM</td>
+                <td>1</td>
+                <td>A</td>
+            </tr> -->
+        </tbody>
+    </table>
+    {% if teetime_list %}
+     {% else %}
+        <p>All quit on the first tee</p>
+    {% endif %}
+{% endblock %}

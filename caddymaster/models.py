@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
@@ -24,13 +22,14 @@ def get_sentinel_user():
     return get_user_model().objects.get_or_create(username="deleted_caddy")[0]
 
 class TeeTime(models.Model):
-    golfers = models.JSONField(null=False)
+    golfers = models.CharField(max_length=100)
     caddy = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
-    time = models.DateField(default=datetime.date.today)
+    time = models.DateTimeField()
     position = models.IntegerField(null=True, blank=True)
     flight = models.CharField(max_length=4, blank=True)
     caddy_shack = models.ForeignKey(CaddyShack, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        golfers_and_time = self.golfers + self.time.strftime
+        time_str = self.time.strftime(" %H:%M on %m/%d/%Y")
+        golfers_and_time = self.golfers + time_str
         return golfers_and_time 
