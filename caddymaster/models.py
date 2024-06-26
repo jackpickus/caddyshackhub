@@ -7,7 +7,7 @@ from loopers.models import Caddy
 class CaddyMaster(Caddy):
     class Meta:
         proxy: True
-        permissions = [("can_assign_loops", "Can assign loops")]
+        permissions = [("can_create_teetimes", "Can create Teetimes")]
 
 class CaddyShack(models.Model):
     caddy_shack_title = models.CharField(max_length=100)
