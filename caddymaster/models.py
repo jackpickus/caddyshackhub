@@ -30,6 +30,6 @@ class TeeTime(models.Model):
     caddy_shack = models.ForeignKey(CaddyShack, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        time_str = self.time.strftime(" %H:%M on %m/%d/%Y")
+        time_str = self.time.strftime(" %I:%M %p on %m/%d/%Y")
         golfers_and_time = self.golfers + time_str
         return golfers_and_time 
