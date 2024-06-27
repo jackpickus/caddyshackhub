@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 
@@ -33,3 +34,6 @@ class TeeTime(models.Model):
         time_str = self.time.strftime(" %I:%M %p on %m/%d/%Y")
         golfers_and_time = self.golfers + time_str
         return golfers_and_time 
+
+    def get_absolute_url(self):
+        return reverse("caddymaster:teetime-detail", kwargs={"pk": self.pk})
