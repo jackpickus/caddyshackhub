@@ -1,0 +1,20 @@
+
+{% extends "caddymaster/base_generic.html" %}
+
+{% block content %}
+    <h3>{{ teetime.golfers }}</h3>
+
+    <p><strong>Time:</strong> {{ teetime.time }}</p>
+    <p><strong>Caddy:</strong> {{ teetime.caddy }}</p>
+    <p><strong>Position:</strong> {{ teetime.position }}</p>
+    <p><strong>Flight:</strong> {{ teetime.flight }}</p>
+    <p><a href="{% url 'caddymaster:edit_teetime' teetime.id %}">Edit TeeTime</a></p>
+    <a
+        class="danger"
+        href="delete/{{ teetime.id }}">
+        Delete TeeTime
+    </a>
+    <p>**Delete cannot be undone**</p>
+
+
+{% endblock %}
