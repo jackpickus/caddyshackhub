@@ -3,6 +3,9 @@
 {% block content %}
     <h3>Dashboard</h3>
     <p class=""><a href="{% url 'caddymaster:new_teetime'%}">New TeeTime</a></p>
+    {% if perms.caddymaster %}
+        <p>You have permission to create teetimes</p>
+    {% endif %}
     <table>
         <thead>
             <tr>
@@ -16,7 +19,7 @@
         <tbody>
             {% for tee_time in teetime_list %}
             <tr>
-                <td>{{ tee_time.golfers }}</td>
+                <td><a href="{{ tee_time.get_absolute_url }}">{{ tee_time.golfers }}</a></td>
                 <td>{{ tee_time.caddy }}</td>
                 <td>{{ tee_time.time }}</td>
                 <td>{{ tee_time.position }}</td>
@@ -27,6 +30,6 @@
     </table>
     {% if teetime_list %}
      {% else %}
-        <p>All quit on the first tee</p>
+        <p>All quiet on the first tee</p>
     {% endif %}
 {% endblock %}
