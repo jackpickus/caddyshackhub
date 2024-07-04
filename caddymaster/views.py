@@ -29,3 +29,7 @@ def new_teetime(request):
         f = NewTeeTimeForm()
 
     return render(request, "caddymaster/new_teetime.html", {"form": f})
+
+class TeeTimeDetailView(generic.DetailView):
+    model = TeeTime
+    template_name = "caddymaster/teetime_details.html"
