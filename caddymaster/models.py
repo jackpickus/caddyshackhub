@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -25,7 +27,7 @@ def get_sentinel_user():
 class TeeTime(models.Model):
     golfers = models.CharField(max_length=100)
     caddy = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
-    time = models.DateTimeField()
+    time = models.DateTimeField(default=datetime.datetime.now().replace(hour=8, minute=0,second=0,microsecond=0))
     position = models.IntegerField(null=True, blank=True)
     flight = models.CharField(max_length=4, blank=True)
     caddy_shack = models.ForeignKey(CaddyShack, on_delete=models.CASCADE)
