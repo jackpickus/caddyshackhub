@@ -8,4 +8,5 @@ urlpatterns = [
     path('teetime/new', views.new_teetime, name='new_teetime'),
     path('teetime/<int:pk>', views.TeeTimeDetailView.as_view(), name='teetime-detail'),
     path('teetime/<int:pk>/edit_teetime', views.edit_teetime, name='edit_teetime'),
+    path("teetime/delete/<int:teetime_id>", views.delete_teetime, name="delete_teetime"),
 ]

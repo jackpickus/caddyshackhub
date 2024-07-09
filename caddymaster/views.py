@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import generic
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 from .models import TeeTime, CaddyMaster, CaddyShack
 from .forms import NewTeeTimeForm
@@ -80,3 +81,16 @@ def edit_teetime(request, pk):
         f = NewTeeTimeForm(instance=teetime_to_edit, initial={"caddy": caddy_names})
 
     return render(request, "caddymaster/edit_teetime.html", {"form": f, "item": teetime_to_edit})
+
+@login_required
+def delete_teetime(request, teetime_id):
+    try:
+        teetime = TeeTime.objects.get(pk=teetime_id)
+    except TeeTime.DoesNotExist:
+        raise Http404("TeeTime does not exist")
+
+    if teetime.caddy_shack.caddy_master.user.id != request.user.id:
+        return HttpResponseForbidden()
+
+    teetime.delete()
+    return redirect(reverse("caddymaster:index"))
