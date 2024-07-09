@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.http import Http404, HttpResponseForbidden
+from django.urls import reverse
+from django.shortcuts import render, redirect
 from django.views import generic
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
@@ -40,3 +42,41 @@ def new_teetime(request):
 class TeeTimeDetailView(generic.DetailView):
     model = TeeTime
     template_name = "caddymaster/teetime_details.html"
+
+def edit_teetime(request, pk):
+    try:
+        teetime_to_edit = TeeTime.objects.get(pk=pk)
+    except:
+        raise Http404("Teetime does not exist")
+
+    if teetime_to_edit.caddy_shack.caddy_master.user.id != request.user.id:
+        return HttpResponseForbidden()
+
+    if request.method == "POST":
+        f = NewTeeTimeForm(request.POST, instance=teetime_to_edit)
+        if f.is_valid():
+            f.save()
+            messages.success(request, "TeeTime has been updated")
+            return redirect(reverse("caddymaster:index"))
+    else:
+        caddies_in_shack = teetime_to_edit.caddy_shack.caddys.all()
+        caddy_names = []
+        for caddy in caddies_in_shack:
+            # Skip caddy already assigned to teetime
+            if caddy.id == teetime_to_edit.caddy.id:
+                continue
+
+            the_caddy_obj = []
+            the_caddy_obj.append(caddy.id)
+            the_caddy_obj.append(caddy.username) 
+            caddy_names.append(tuple(the_caddy_obj)) # the 'caddy' object is really a User object
+
+        # Add caddy already assigned w/teetime to front of list
+        init_caddy = []
+        init_caddy.append(str(teetime_to_edit.caddy.id))
+        init_caddy.append(teetime_to_edit.caddy.username)
+        caddy_names.insert(0, tuple(init_caddy))
+
+        f = NewTeeTimeForm(instance=teetime_to_edit, initial={"caddy": caddy_names})
+
+    return render(request, "caddymaster/edit_teetime.html", {"form": f, "item": teetime_to_edit})
