@@ -62,6 +62,11 @@ def edit_teetime(request, pk):
     else:
         caddies_in_shack = teetime_to_edit.caddy_shack.caddys.all()
         caddy_names = []
+        the_caddy_obj = []
+        # Add caddy already assigned w/teetime to front of list
+        the_caddy_obj.append(str(teetime_to_edit.caddy.id))
+        the_caddy_obj.append(teetime_to_edit.caddy.username)
+        caddy_names.append(tuple(the_caddy_obj))
         for caddy in caddies_in_shack:
             # Skip caddy already assigned to teetime
             if caddy.id == teetime_to_edit.caddy.id:
@@ -71,12 +76,6 @@ def edit_teetime(request, pk):
             the_caddy_obj.append(caddy.id)
             the_caddy_obj.append(caddy.username) 
             caddy_names.append(tuple(the_caddy_obj)) # the 'caddy' object is really a User object
-
-        # Add caddy already assigned w/teetime to front of list
-        init_caddy = []
-        init_caddy.append(str(teetime_to_edit.caddy.id))
-        init_caddy.append(teetime_to_edit.caddy.username)
-        caddy_names.insert(0, tuple(init_caddy))
 
         f = NewTeeTimeForm(instance=teetime_to_edit, initial={"caddy": caddy_names})
 
