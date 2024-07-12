@@ -13,7 +13,7 @@ class CaddyMaster(Caddy):
         permissions = [("can_create_teetimes", "Can create Teetimes")]
 
 class CaddyShack(models.Model):
-    caddy_shack_title = models.CharField(max_length=100)
+    caddy_shack_title = models.CharField("Caddy Shack", max_length=100)
     caddy_master = models.ForeignKey(CaddyMaster, on_delete=models.CASCADE)
     caddys = models.ManyToManyField(User, related_name="caddys_in_shack")
 
